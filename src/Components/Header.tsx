@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { Link, useRouteMatch } from "react-router-dom";
+import { useState } from "react";
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
@@ -43,24 +44,28 @@ const Item = styled.li`
   &:hover {
     color: ${(props) => props.theme.white.lighter};
   }
+  position: relative;
 `;
 const Search = styled.span`
   color: white;
+  display: flex;
+  align-items: center;
+  position: relative;
   svg {
     height: 25px;
   }
 `;
 
-const Circle = styled.span`
+const Circle = styled(motion.span)`
   position: absolute;
   width: 5px;
   height: 5px;
   border-radius: 5px;
-  bottom: 20px;
-  left: auto;
-  right: auto;
+  bottom: -5px;
+  left: 0;
+  right: 0;
   margin: 0 auto;
-  background-color: ${(prop) => prop.theme.red};
+  background-color: ${(props) => props.theme.red};
 `;
 
 const logoVariants = {
@@ -76,9 +81,10 @@ const logoVariants = {
 };
 
 function Header() {
+  const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useRouteMatch("/");
   const tvMatch = useRouteMatch("/tv");
-  console.log(homeMatch, tvMatch);
+  const openSearch = () => setSearchOpen(true);
   return (
     <Nav>
       <Col>
@@ -95,15 +101,19 @@ function Header() {
         </Logo>
         <Items>
           <Item>
-            <Link to="/">Home {homeMatch?.isExact && <Circle />}</Link>
+            <Link to="/">
+              Home {homeMatch?.isExact && <Circle layoutId="circle" />}
+            </Link>
           </Item>
           <Item>
-            <Link to="/tv">Tv Shows {tvMatch && <Circle />}</Link>
+            <Link to="/tv">
+              Tv Shows {tvMatch && <Circle layoutId="circle" />}
+            </Link>
           </Item>
         </Items>
       </Col>
       <Col>
-        <Search>
+        <Search onClick={openSearch}>
           <svg
             fill="currentColor"
             viewBox="0 0 20 20"
